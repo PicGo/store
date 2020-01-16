@@ -1,0 +1,63 @@
+{
+  "name": "typescript-node-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "dev": "tsc -w -p .",
+    "build": "rollup -c",
+    "lint": "eslint src/**",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cz": "git-cz",
+    "release": "bump-version"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Molunerfinn/typescript-node-template.git"
+  },
+  "author": "Molunerfinn",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Molunerfinn/typescript-node-template/issues"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    },
+    "cz-customizable": {
+      "config": "./node_modules/@picgo/bump-version/.cz-config.js"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "./node_modules/@picgo/bump-version/commitlint-picgo"
+    ]
+  },
+  "homepage": "https://github.com/Molunerfinn/typescript-node-template#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@picgo/bump-version": "^1.0.3",
+    "@types/node": "^13.1.7",
+    "@typescript-eslint/eslint-plugin": "2",
+    "commitizen": "^4.0.3",
+    "conventional-changelog": "^3.1.18",
+    "cz-customizable": "^6.2.0",
+    "eslint": "6",
+    "eslint-config-standard-with-typescript": "^11.0.1",
+    "eslint-plugin-import": "2",
+    "eslint-plugin-node": "9",
+    "eslint-plugin-promise": "4",
+    "eslint-plugin-standard": "4",
+    "husky": "^4.0.10",
+    "rollup": "^1.29.0",
+    "rollup-plugin-terser": "^5.2.0",
+    "rollup-plugin-typescript2": "^0.25.3",
+    "typescript": "^3.7.4"
+  }
+}

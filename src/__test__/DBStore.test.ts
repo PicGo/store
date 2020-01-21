@@ -80,7 +80,7 @@ it('It should update a item by id', async () => {
     test: 2
   })
   const resultValue = await db.getById('test-id-1')
-  expect(resultValue.test).toBe(2)
+  expect(resultValue?.test).toBe(2)
 })
 
 it('It should return false when update a non-exists item', async () => {
@@ -89,4 +89,10 @@ it('It should return false when update a non-exists item', async () => {
     test: 3
   })
   expect(result).toBe(false)
+})
+
+it('It should return undefined when get a non-exists item', async () => {
+  const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+  const result = await db.getById('xxx')
+  expect(result).toBeUndefined()
 })

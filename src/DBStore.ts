@@ -20,7 +20,7 @@ class DBStore {
   }
 
   async get (): Promise<IObject[]> {
-    return (await this.db).get(this.collectionName).value()
+    return (await this.read()).get(this.collectionName).value()
   }
 
   @metaInfoHelper(IMetaInfoMode.create)
@@ -53,7 +53,7 @@ class DBStore {
     }
   }
 
-  async getById (id: string): Promise<IObject> {
+  async getById (id: string): Promise<IObject | undefined> {
     return (await this.read())
       .get(this.collectionName)
       // @ts-ignore

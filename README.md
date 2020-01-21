@@ -2,7 +2,7 @@
 
 For PicGo projects to write & read data or configuration in disk.
 
-[![Coverage Status](https://coveralls.io/repos/github/PicGo/store/badge.svg?branch=master)](https://coveralls.io/github/PicGo/store?branch=master) [![PicGo Convention](https://img.shields.io/badge/picgo-convention-blue.svg?style=flat-square)](https://github.com/PicGo/bump-version)
+[![Coverage Status](https://coveralls.io/repos/github/PicGo/store/badge.svg?branch=refs/heads/master)](https://coveralls.io/github/PicGo/store?branch=refs/heads/master) [![PicGo Convention](https://img.shields.io/badge/picgo-convention-blue.svg?style=flat-square)](https://github.com/PicGo/bump-version)
 
 ## Usage
 

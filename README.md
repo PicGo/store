@@ -34,7 +34,7 @@ For now, `@picgo/store` has two export member: `DBStore` & `JSONStore`.
 - `new DBStore(dbPath: string, collectionName: string)`
 
 ```js
-const db = new DBStore(dbPath: string, collectionName: string)
+const db = new DBStore('picgo.db', 'uploadImgs')
 ```
 
 #### Get `.get()`

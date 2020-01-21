@@ -7,7 +7,12 @@ export default {
       tsconfigOverride: {
         compilerOptions: {
           module: 'ESNext'
-        }
+        },
+        exclude: [
+          'node_modules',
+          '**/*.test.ts',
+          '**/*.spec.ts'
+        ]
       }
     }),
     terser()
@@ -15,6 +20,11 @@ export default {
   output: [{
     format: 'cjs',
     file: 'dist/index.js',
-    sourcemap: false
-  }]
+    sourcemap: true
+  }],
+  external: [
+    'lowdb',
+    'lowdb/adapters/FileSync',
+    'bson'
+  ]
 }

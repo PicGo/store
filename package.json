@@ -5,10 +5,10 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "dev": "tsc -w -p .",
-    "build": "rollup -c",
+    "dev": "rm -rf ./dist/* && tsc -w -p .",
+    "build": "rm -rf ./dist/* && rollup -c",
     "lint": "eslint src/**",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --coverage",
     "cz": "git-cz",
     "release": "bump-version"
   },
@@ -43,6 +43,8 @@
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@picgo/bump-version": "^1.0.3",
+    "@types/jest": "^24.9.0",
+    "@types/lowdb": "^1.0.9",
     "@types/node": "^13.1.7",
     "@typescript-eslint/eslint-plugin": "2",
     "commitizen": "^4.0.3",
@@ -55,9 +57,18 @@
     "eslint-plugin-promise": "4",
     "eslint-plugin-standard": "4",
     "husky": "^4.0.10",
+    "jest": "^24.9.0",
     "rollup": "^1.29.0",
     "rollup-plugin-terser": "^5.2.0",
     "rollup-plugin-typescript2": "^0.25.3",
+    "ts-jest": "^24.3.0",
     "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "@types/bson": "^4.0.1",
+    "@types/graceful-fs": "^4.1.3",
+    "bson": "^4.0.3",
+    "lodash-id": "^0.14.0",
+    "lowdb": "^1.0.0"
   }
 }

@@ -1,9 +1,18 @@
 import Lowdb from 'lowdb'
 import FileSync from 'lowdb/adapters/FileSync'
+import json from 'comment-json'
 class JSONStore {
   private readonly db: Lowdb.LowdbSync<Lowdb.AdapterSync>
   constructor (dbPath: string) {
-    const adapter = new FileSync(dbPath)
+    if (!dbPath) {
+      throw Error('Please provide valid dbPath')
+    }
+    const adapter = new FileSync(dbPath, {
+      serialize (obj: any): string {
+        return json.stringify(obj, null, 2)
+      },
+      deserialize: json.parse
+    })
     this.db = Lowdb(adapter)
   }
 
@@ -23,13 +32,8 @@ class JSONStore {
     return this.read().has(key).value()
   }
 
-  insert (key: string, value: any): void {
-    // @ts-ignore
-    return this.read().get(key).insert(value).write()
-  }
-
   unset (key: string, value: any): boolean {
-    return this.read().get(key).unset(value).value()
+    return this.read().get(key).unset(value).write()
   }
 }
 

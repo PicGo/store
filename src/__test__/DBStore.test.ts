@@ -79,7 +79,7 @@ it('It should update a item by id', async () => {
   await db.updateById('test-id-1', {
     test: 2
   })
-  const resultValue = await db.getById('test-id-1')
+  const resultValue = await db.getById<{test: number}>('test-id-1')
   expect(resultValue?.test).toBe(2)
 })
 

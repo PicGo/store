@@ -53,7 +53,7 @@ class DBStore {
     }
   }
 
-  async getById (id: string): Promise<IObject | undefined> {
+  async getById<T> (id: string): Promise<T | undefined> {
     return (await this.read())
       .get(this.collectionName)
       // @ts-ignore

@@ -1,3 +1,12 @@
+# :tada: 1.0.0-alpha.1 (2021-04-04)
+
+
+### :bug: Bug Fixes
+
+* ci error ([116f9a6](https://github.com/Molunerfinn/typescript-node-template/commit/116f9a6))
+
+
+
 # :tada: 1.0.0-alpha.0 (2021-04-04)
 
 

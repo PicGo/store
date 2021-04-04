@@ -1,3 +1,12 @@
+# :tada: 1.0.0-alpha.2 (2021-04-04)
+
+
+### :bug: Bug Fixes
+
+* ci error ([7d29430](https://github.com/Molunerfinn/typescript-node-template/commit/7d29430))
+
+
+
 # :tada: 1.0.0-alpha.1 (2021-04-04)
 
 

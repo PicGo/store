@@ -24,6 +24,6 @@ jobs:
           COVERALLS_REPO_TOKEN: "${{ secrets.COVERALLS_REPO_TOKEN }}"
           COVERALLS_GIT_BRANCH: "${{ github.ref }}"
       - run: npm run build
-      - run: npm publish
+      - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

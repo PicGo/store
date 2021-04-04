@@ -1,3 +1,12 @@
+# :tada: 1.0.0-alpha.3 (2021-04-04)
+
+
+### :package: Chore
+
+* add npmignore ([c279ca4](https://github.com/Molunerfinn/typescript-node-template/commit/c279ca4))
+
+
+
 # :tada: 1.0.0-alpha.2 (2021-04-04)
 
 

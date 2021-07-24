@@ -48,7 +48,7 @@
     "@types/lowdb": "^1.0.9",
     "@types/node": "^13.1.7",
     "@typescript-eslint/eslint-plugin": "2",
-    "commitizen": "^4.0.3",
+    "commitizen": "^4.2.4",
     "conventional-changelog": "^3.1.18",
     "coveralls": "^3.0.9",
     "cz-customizable": "^6.2.0",

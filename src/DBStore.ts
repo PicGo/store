@@ -6,6 +6,7 @@ class DBStore {
   private readonly db: Promise<Lowdb.LowdbAsync<any>>
   private readonly collectionName: string
   private readonly collectionKey: string
+  private reading: Promise<Lowdb.LowdbAsync<any>> | null = null
   constructor (dbPath: string, collectionName: string) {
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (!dbPath || !collectionName) {
@@ -17,8 +18,11 @@ class DBStore {
     this.db = Lowdb<any>(adapter)
   }
 
-  async read (): Promise<Lowdb.LowdbAsync<any>> {
-    return (await this.db).read()
+  async read (flush = false): Promise<Lowdb.LowdbAsync<any>> {
+    if (flush || !this.reading) {
+      this.reading = (await this.db).read()
+    }
+    return this.reading
   }
 
   async get (): Promise<IObject[]> {
@@ -29,18 +33,16 @@ class DBStore {
   async insert<T> (value: T): Promise<IResult<T>> {
     const id = (value as IResult<T>).id
     // @ts-ignore
-    const collection = (await this.read()).get(this.collectionName)
+    const result = (await this.read()).get(`${this.collectionKey}.${id}`).value()
     // @ts-ignore
-    const result = await collection.find({
-      id
-    }).value()
     if (result) {
       await this.updateById(id, value)
       return (value as IResult<T>)
     }
+    const collection = (await this.read()).get(this.collectionName)
     // @ts-ignore
     await collection.push(value).write()
-    await (await this.read()).set(`${this.collectionKey}.${id}`, true).write()
+    await (await this.read()).set(`${this.collectionKey}.${id}`, 1).write()
     return (value as IResult<T>)
   }
 
@@ -55,13 +57,10 @@ class DBStore {
   @metaInfoHelper(IMetaInfoMode.update)
   async updateById (id: string, value: IObject): Promise<boolean> {
     const collection = (await this.read()).get(this.collectionName)
-    // @ts-ignore
-    const result = await collection.find({
-      id
-    }).value()
+    const result = (await this.read()).get(`${this.collectionKey}.${id}`).value()
     if (result) {
-      // @ts-ignore
-      await collection.find({ id }).assign(result, value, { id }).write()
+    // @ts-ignore
+      await collection.find({ id }).assign(value).write()
       return true
     } else {
       return false

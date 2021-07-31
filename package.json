@@ -8,7 +8,7 @@
     "dev": "rm -rf ./dist/* && tsc -w -p .",
     "build": "rm -rf ./dist/* && rollup -c",
     "lint": "eslint src/**",
-    "test": "jest --coverage",
+    "test": "jest --coverage --runInBand",
     "cz": "git-cz",
     "release": "bump-version",
     "cover": "cat ./coverage/lcov.info | coveralls"

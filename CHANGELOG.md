@@ -1,3 +1,12 @@
+## :tada: 1.0.1 (2021-07-31)
+
+
+### :sparkles: Features
+
+* find with key to improve performance ([e6b93a6](https://github.com/Molunerfinn/typescript-node-template/commit/e6b93a6))
+
+
+
 # :tada: 1.0.0 (2021-07-31)
 
 

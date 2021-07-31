@@ -1,3 +1,17 @@
+# :tada: 1.0.0 (2021-07-31)
+
+
+### :sparkles: Features
+
+* add key when insert an item ([fa94e6c](https://github.com/Molunerfinn/typescript-node-template/commit/fa94e6c))
+
+
+### :package: Chore
+
+* dep audit ([7901426](https://github.com/Molunerfinn/typescript-node-template/commit/7901426))
+
+
+
 # :tada: 1.0.0-alpha.3 (2021-04-04)
 
 

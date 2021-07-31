@@ -30,14 +30,16 @@ class ZlibAdapter {
         })
       } else {
         const data = JSON.stringify({
-          [this.collectionName]: []
+          [this.collectionName]: [],
+          [`__${this.collectionName}_KEY__`]: {}
         })
         zlib.gzip(data, async (err, result): Promise<void> => {
           /* istanbul ignore next */
           if (err) return reject(err)
           await writeFile(this.dbPath, result)
           resolve({
-            [this.collectionName]: []
+            [this.collectionName]: [],
+            [`__${this.collectionName}_KEY__`]: {}
           })
         })
       }

@@ -96,3 +96,26 @@ it('It should return undefined when get a non-exists item', async () => {
   const result = await db.getById('xxx')
   expect(result).toBeUndefined()
 })
+
+it('It should update when insert same the same id', async () => {
+  const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+  await db.insert<{
+    id?: string
+    a: number
+  }>({
+    id: '123',
+    a: 1
+  })
+  const data1 = await db.get()
+  // Insert the same id should be updated
+  const res = await db.insert<{
+    id?: string
+    a: number
+  }>({
+    id: '123',
+    a: 2
+  })
+  expect(res.a).toBe(2)
+  const data2 = await db.get()
+  expect(data1.length).toBe(data2.length)
+})

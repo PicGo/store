@@ -42,9 +42,14 @@ describe('write group', () => {
 
   it('It should remove a item in db', async () => {
     const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    const reading = await db.read()
+    let res = await reading.get('__uploaded_KEY__.test-id').value()
+    expect(res).toBe(1)
     await db.removeById('test-id')
     const resultValue = await db.getById('test-id')
     expect(resultValue).toBeUndefined()
+    res = await reading.get('__uploaded_KEY__.test-id').value()
+    expect(res).toBe(undefined)
   })
 
   it('It should insertMany item in db', async () => {

@@ -26,7 +26,7 @@ class DBStore {
   }
 
   async get (filter?: IFilter): Promise<IGetResult<IObject>> {
-    let data: Array<IResult<IObject>> = (await this.read()).get(this.collectionName).value()
+    let data: Array<IResult<IObject>> = (await this.read()).get(this.collectionName).value().slice()
     const total = data.length
     if (filter !== undefined) {
       if (filter.orderBy === 'desc') {

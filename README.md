@@ -37,17 +37,30 @@ For now, `@picgo/store` has two export member: `DBStore` & `JSONStore`.
 const db = new DBStore('picgo.db', 'uploadImgs')
 ```
 
-#### Get `.get()`
+#### Get `.get(filter?: IFilter)`
 
-- return: `Promise<IObject[]>`
-- interface: [IObject](/src/types/index.ts)
+- return: `Promise<IGetResult<IObject>[]>`
+- interface: [IGetResult](/src/types/index.ts)
 
 To get the whole collection value.
 
 ```js
 async () => {
   const collection = await db.get()
-  console.log(collection) // []
+  console.log(collection) // { total: x, data: [{...}, {...}, ...] }
+}
+```
+
+To get filtered collection: (just like SQL `orderBy`, `limit` & `offset`)
+
+```js
+async () => {
+  const collection = await db.get({
+    orderBy: 'desc', // ['desc' | 'asc'] -> order with created-time
+    limit: 1, // limit >= 1
+    offset: 0, // offset >= 0
+  })
+  console.log(collection) // { total: 1, data: [{...}] }
 }
 ```
 

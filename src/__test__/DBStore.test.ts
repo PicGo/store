@@ -70,7 +70,7 @@ describe('write group', () => {
       test: 123,
       createdAt: Date.now()
     })
-    const list = await db.get()
+    const { data: list } = await db.get()
     const item = list[list.length - 1]
     expect(item.id).toBeDefined()
     expect(item.createdAt).toBeDefined()
@@ -121,6 +121,50 @@ describe('update group', () => {
     })
     expect(res.a).toBe(2)
     const data2 = await db.get()
-    expect(data1.length).toBe(data2.length)
+    expect(data1.total).toBe(data2.total)
+  })
+})
+
+describe('filter test', () => {
+  it('It should reverse when orderBy desc', async () => {
+    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    const data1 = await db.get({
+      orderBy: 'asc'
+    })
+    const data2 = await db.get({
+      orderBy: 'desc'
+    })
+    expect(data1.data.reverse()).toEqual(data2.data)
+  })
+  it('It should filter failed when the offset < 0 or limit < 0', async () => {
+    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    const data1 = await db.get({
+      offset: -1
+    })
+    const data2 = await db.get()
+    const data3 = await db.get({
+      limit: -1
+    })
+    expect(data1.data.length).toBe(data2.data.length)
+    expect(data1.data.length).toBe(data3.data.length)
+  })
+
+  it('It should filter success when offset >= 0', async () => {
+    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    const data1 = await db.get()
+    const data2 = await db.get({
+      offset: 1
+    })
+    expect(data1.data[1]).toEqual(data2.data[0])
+  })
+
+  it('It should filter success when limit > 0', async () => {
+    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    const data1 = await db.get()
+    const data2 = await db.get({
+      limit: 1
+    })
+    expect(data1.data[0]).toEqual(data2.data[0])
+    expect(data2.data.length).toBe(1)
   })
 })

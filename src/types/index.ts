@@ -5,6 +5,16 @@ export enum IDBStatus {
   stopped = 'stopped'
 }
 
+export interface IFilter {
+  orderBy?: 'asc' | 'desc'
+  limit?: number
+  offset?: number
+}
+
+export interface IGetResult<T> {
+  total: number
+  data: Array<IResult<T>>
+}
 export interface IObject {
   id?: string
   [propName: string]: any

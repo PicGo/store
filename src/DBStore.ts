@@ -1,7 +1,7 @@
 import Lowdb from 'lowdb'
 import { ZlibAdapter } from './adapters/ZlibAdapter'
 import { metaInfoHelper } from './utils/metaInfoHelper'
-import { IMetaInfoMode, IObject, IResult } from './types'
+import { IMetaInfoMode, IObject, IResult, IGetResult, IFilter } from './types'
 class DBStore {
   private readonly db: Promise<Lowdb.LowdbAsync<any>>
   private readonly collectionName: string
@@ -25,8 +25,24 @@ class DBStore {
     return this.reading
   }
 
-  async get (): Promise<IObject[]> {
-    return (await this.read()).get(this.collectionName).value()
+  async get (filter?: IFilter): Promise<IGetResult<IObject>> {
+    let data: Array<IResult<IObject>> = (await this.read()).get(this.collectionName).value()
+    const total = data.length
+    if (filter !== undefined) {
+      if (filter.orderBy === 'desc') {
+        data = data.reverse()
+      }
+      if (typeof filter.offset === 'number' && filter.offset >= 0) {
+        data = data.slice(filter.offset)
+      }
+      if (typeof filter.limit === 'number' && filter.limit > 0) {
+        data = data.slice(0, filter.limit)
+      }
+    }
+    return {
+      total,
+      data
+    }
   }
 
   @metaInfoHelper(IMetaInfoMode.create)

@@ -1,3 +1,12 @@
+## :tada: 1.0.3 (2021-08-01)
+
+
+### :bug: Bug Fixes
+
+* reverse will change data self ([bcb32bd](https://github.com/Molunerfinn/typescript-node-template/commit/bcb32bd))
+
+
+
 ## :tada: 1.0.2 (2021-08-01)
 
 

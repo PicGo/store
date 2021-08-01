@@ -1,3 +1,12 @@
+## :tada: 1.0.2 (2021-08-01)
+
+
+### :sparkles: Features
+
+* add filter support ([8cf57e8](https://github.com/Molunerfinn/typescript-node-template/commit/8cf57e8))
+
+
+
 ## :tada: 1.0.1 (2021-07-31)
 
 

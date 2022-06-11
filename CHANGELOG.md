@@ -1,3 +1,12 @@
+# :tada: 2.0.0 (2022-06-11)
+
+
+### :sparkles: Features
+
+* add overwrite for DBStore && update lowdb version ([ebd28d9](https://github.com/Molunerfinn/typescript-node-template/commit/ebd28d9))
+
+
+
 ## :tada: 1.0.4 (2022-06-11)
 
 

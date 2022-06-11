@@ -1,3 +1,12 @@
+## :tada: 1.0.4 (2022-06-11)
+
+
+### :bug: Bug Fixes
+
+* gzip data read error will cause DBStore crash ([01df844](https://github.com/Molunerfinn/typescript-node-template/commit/01df844))
+
+
+
 ## :tada: 1.0.3 (2021-08-01)
 
 

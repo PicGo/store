@@ -1,12 +1,16 @@
-import Lowdb from 'lowdb'
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { Low } from '@commonify/lowdb'
 import { ZlibAdapter } from './adapters/ZlibAdapter'
 import { metaInfoHelper } from './utils/metaInfoHelper'
-import { IMetaInfoMode, IObject, IResult, IGetResult, IFilter } from './types'
+import { IMetaInfoMode, IObject, IResult, IGetResult, IFilter, ILowData, ILowDataKeyMap } from './types'
+
 class DBStore {
-  private readonly db: Promise<Lowdb.LowdbAsync<any>>
+  private readonly db: Low<ILowData>
   private readonly collectionName: string
   private readonly collectionKey: string
-  private reading: Promise<Lowdb.LowdbAsync<any>> | null = null
+  private hasRead = false
   public errorList: Array<Error | string> = []
   private readonly adapter: ZlibAdapter
   constructor (dbPath: string, collectionName: string) {
@@ -17,22 +21,23 @@ class DBStore {
     this.collectionName = collectionName
     this.collectionKey = `__${collectionName}_KEY__`
     this.adapter = new ZlibAdapter(dbPath, collectionName, this.errorList)
-    this.db = Lowdb<any>(this.adapter)
+    this.db = new Low<ILowData>(this.adapter)
   }
 
   getAdapter (): ZlibAdapter {
     return this.adapter
   }
 
-  async read (flush = false): Promise<Lowdb.LowdbAsync<any>> {
-    if (flush || !this.reading) {
-      this.reading = (await this.db).read()
+  async read (flush = false): Promise<ILowData | null> {
+    if (flush || !this.hasRead) {
+      this.hasRead = true
+      await this.db.read()
     }
-    return this.reading
+    return this.db.data
   }
 
   async get (filter?: IFilter): Promise<IGetResult<IObject>> {
-    let data: Array<IResult<IObject>> = (await this.read()).get(this.collectionName).value().slice()
+    let data: Array<IResult<IObject>> = (await this.getCollection()).slice()
     const total = data.length
     if (filter !== undefined) {
       if (filter.orderBy === 'desc') {
@@ -51,57 +56,85 @@ class DBStore {
     }
   }
 
+  private async getCollection (): Promise<Array<IResult<IObject>>> {
+    return ((await this.read())?.[this.collectionName]) as Array<IResult<IObject>>
+  }
+
+  private async getCollectionKey (id: string): Promise<1 | null> {
+    return (await this.getCollectionKeyMap())[id]
+  }
+
+  private async getCollectionKeyMap (): Promise<ILowDataKeyMap> {
+    return (((await this.read())?.[this.collectionKey]) as ILowDataKeyMap)
+  }
+
+  private async setCollectionKey (id: string): Promise<void> {
+    await this.read()
+    const data = this.db.data!
+    const collectionKeyMap = data[this.collectionKey] as ILowDataKeyMap
+    collectionKeyMap[id] = 1
+  }
+
   @metaInfoHelper(IMetaInfoMode.create)
-  async insert<T> (value: T): Promise<IResult<T>> {
+  async insert<T> (value: T, writable = true): Promise<IResult<T>> {
     const id = (value as IResult<T>).id
-    // @ts-ignore
-    const result = (await this.read()).get(`${this.collectionKey}.${id}`).value()
+    const result = await this.getCollectionKey(id)
     // @ts-ignore
     if (result) {
       await this.updateById(id, value)
       return (value as IResult<T>)
     }
-    const collection = (await this.read()).get(this.collectionName)
-    // @ts-ignore
-    await collection.push(value).write()
-    await (await this.read()).set(`${this.collectionKey}.${id}`, 1).write()
+    (await this.getCollection()).push(value as IResult<T>)
+    await this.setCollectionKey(id)
+    if (writable) {
+      await this.db.write()
+    }
     return (value as IResult<T>)
   }
 
-  @metaInfoHelper(IMetaInfoMode.create)
+  @metaInfoHelper(IMetaInfoMode.createMany)
   async insertMany<T> (value: T[]): Promise<Array<IResult<T>>> {
     for (const item of value) {
-      await this.insert(item)
+      await this.insert(item, false)
     }
+    await this.db.write()
     return (value as Array<IResult<T>>)
   }
 
   @metaInfoHelper(IMetaInfoMode.update)
   async updateById (id: string, value: IObject): Promise<boolean> {
-    const collection = (await this.read()).get(this.collectionName)
-    const result = (await this.read()).get(`${this.collectionKey}.${id}`).value()
+    const collection = await this.getCollection()
+    const result = await this.getCollectionKey(id)
     if (result) {
-    // @ts-ignore
-      await collection.find({ id }).assign(value).write()
+      const item = collection.find(item => item.id === id)
+      Object.assign(item, value)
+      await this.db.write()
       return true
     } else {
       return false
     }
   }
 
-  async getById<T> (id: string): Promise<T | undefined> {
-    return (await this.read())
-      .get(this.collectionName)
-      // @ts-ignore
-      .find({ id })
-      .value()
+  async getById<T> (id: string): Promise<IResult<T> | undefined> {
+    return (await this.getCollection()).find(item => item.id === id) as IResult<T>
   }
 
   async removeById (id: string): Promise<void> {
-    const collection = (await this.read()).get(this.collectionName)
-    // @ts-ignore
-    await collection.remove({ id }).write()
-    await (await this.read()).get(this.collectionKey).unset(id).write()
+    const collection = await this.getCollection()
+    const collectionKeyMap = await this.getCollectionKeyMap()
+    const index = collection.findIndex(item => item.id === id)
+    if (index !== -1) {
+      collection.splice(index, 1)
+      delete collectionKeyMap[id]
+      await this.db.write()
+    }
+  }
+
+  async overwrite<T> (value: T[]): Promise<Array<IResult<T>>> {
+    await this.read();
+    (this.db.data as ILowData)[this.collectionName] = [];
+    (this.db.data as ILowData)[this.collectionKey] = {}
+    return await this.insertMany<T>(value)
   }
 }
 

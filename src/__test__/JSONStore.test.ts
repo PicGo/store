@@ -5,7 +5,9 @@ import fs from 'graceful-fs'
 const DBName = 'test.json'
 
 afterAll(() => {
-  fs.unlinkSync(path.join(__dirname, DBName))
+  if (fs.existsSync(path.join(__dirname, DBName))) {
+    fs.unlinkSync(path.join(__dirname, DBName))
+  }
 }, 1000)
 
 it('It should throw an error without dbPath', () => {
@@ -46,4 +48,12 @@ it('It should unset correctly', () => {
   db.unset('test1', 'test3')
   const res = db.get('test1')
   expect(res.test3).toBeUndefined()
+})
+
+it('It should flush correctly', () => {
+  const db = new JSONStore(path.join(__dirname, DBName))
+  db.set('test', 1)
+  // expect(res.test3).toBeUndefined()
+  db.read(true)
+  expect(db.get('test')).toBe(1)
 })

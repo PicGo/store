@@ -1,5 +1,6 @@
 import { terser } from 'rollup-plugin-terser'
 import typescript from 'rollup-plugin-typescript2'
+// import resolve from 'rollup-plugin-node-resolve'
 export default {
   input: './src/index.ts',
   plugins: [
@@ -23,8 +24,11 @@ export default {
     sourcemap: true
   }],
   external: [
-    'lowdb',
-    'lowdb/adapters/FileSync',
-    'bson'
+    'write-file-atomic',
+    // '@commonify/steno',
+    '@commonify/lowdb',
+    'fflate',
+    'util',
+    'fs'
   ]
 }

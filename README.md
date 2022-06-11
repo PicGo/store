@@ -149,7 +149,7 @@ async () => {
 }
 ```
 
-#### `.removeById(id: string)`: Promise<void>;
+#### RemoveById `.removeById(id: string)`;
 
 - return: `Promise<void>`
 
@@ -159,6 +159,38 @@ To remove an item by id.
 async () => {
   const result = await db.removeById('xxx')
   console.log(result) // undefined
+}
+```
+
+#### Overwrite `.overwrite()<T>(value: T[])` (v2.0.0)
+
+- return: `Promise<IResult<T>[]>`
+- interface: [IResult](/src/types/index.ts)
+
+To overwrite whole collection:
+
+```js
+async () => {
+  const result = await db.overwrite([
+    {
+      imgUrl: 'https://xxxx.jpg'
+    },
+    {
+      imgUrl: 'https://yyyy.jpg'
+    }
+  ])
+  console.log(result)
+  // [{
+  //   id: string,
+  //   imgUrl: string,
+  //   createdAt: number,
+  //   updatedAt: number 
+  // },{
+  //   id: string,
+  //   imgUrl: string,
+  //   createdAt: number,
+  //   updatedAt: number 
+  // }]
 }
 ```
 

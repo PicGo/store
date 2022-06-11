@@ -1,7 +1,6 @@
 import { DBStore } from '../DBStore'
 import path from 'path'
 import fs from 'graceful-fs'
-// import zlib from 'zlib'
 const DBName = 'test.db'
 
 const sleep = async (timeout = 500): Promise<void> => {
@@ -60,14 +59,17 @@ describe('write group', () => {
   })
 
   it('It should remove a item in db', async () => {
+    await sleep(1000)
     const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
-    const reading = await db.read()
-    let res = await reading.get('__uploaded_KEY__.test-id').value()
+    const reading = await db.read() || {}
+    // @ts-ignore
+    let res = reading.__uploaded_KEY__['test-id']
     expect(res).toBe(1)
     await db.removeById('test-id')
     const resultValue = await db.getById('test-id')
     expect(resultValue).toBeUndefined()
-    res = await reading.get('__uploaded_KEY__.test-id').value()
+    // @ts-ignore
+    res = reading.__uploaded_KEY__['test-id']
     expect(res).toBe(undefined)
   })
 
@@ -147,6 +149,28 @@ describe('update group', () => {
     const data2 = await db.get()
     expect(data1.total).toBe(data2.total)
   })
+
+  it('It should overwrite all data', async () => {
+    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    await db.overwrite([
+      {
+        id: 'test1',
+        a: 'test1'
+      },
+      {
+        id: 'test2',
+        a: 'test2'
+      },
+      {
+        id: 'test3',
+        a: 'test3'
+      }
+    ])
+    const data = await db.get()
+    expect(data.data[0].id).toBe('test1')
+    expect(data.data[2].id).toBe('test3')
+    expect(data.total).toBe(3)
+  })
 })
 
 describe('filter test', () => {
@@ -201,9 +225,9 @@ describe('test some db case', () => {
   })
   it('It should not open broken.db', async () => {
     const db = new DBStore(path.join(__dirname, 'broken.db'), 'gallery')
+    const data = await db.get()
     await sleep()
     expect(db.errorList.length).toBe(1)
-    const data = await db.get()
     expect(data.data.length).toBe(0)
   })
 })

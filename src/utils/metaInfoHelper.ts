@@ -4,16 +4,12 @@ function metaInfoHelper (mode: IMetaInfoMode) {
   return function (_target: any, _propertyKey: any, descriptor: PropertyDescriptor) {
     const method = descriptor.value
     descriptor.value = async function (...args: IInsertData) {
-      let multipleArgs = false
-      if (mode === IMetaInfoMode.create) {
-        if (Array.isArray(args[0])) {
-          args = args[0]
-          multipleArgs = true
-        }
+      if (mode === IMetaInfoMode.createMany) {
+        args = args[0] as IObject[]
         args = (args as IObject[]).map(item => metaInfoGenerator(item))
-        if (multipleArgs) {
-          args = [args]
-        }
+        args = [args]
+      } else if (mode === IMetaInfoMode.create) {
+        args[0] = metaInfoGenerator(args[0] as IObject)
       } else {
         metaInfoUpdater((args as [string, IObject])[1])
       }

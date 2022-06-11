@@ -1,7 +1,7 @@
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import fs from 'graceful-fs'
+import fs from 'fs'
 import { promisify } from 'util'
 import { gunzip, gzip, strFromU8 } from 'fflate'
 import writeFile from 'write-file-atomic'
@@ -12,7 +12,7 @@ class ZlibAdapter {
   private readonly dbPath: string
   private readonly collectionName: string
   public errorList: Array<Error | string>
-  public readCount = -1 // init DBStore will read first time
+  public readCount = 0
   // @ts-ignore
   constructor (dbPath: string, collectionName: string, errorList: Array<Error | string>) {
     this.dbPath = dbPath
@@ -31,6 +31,7 @@ class ZlibAdapter {
         const buffer = (await readFile(this.dbPath))
         gunzip(buffer, (err, data) => {
           if (err) {
+            console.error(err)
             this.errorList.push(err)
             return resolve(defaultData)
           }
@@ -39,6 +40,8 @@ class ZlibAdapter {
             const data = JSON.parse(str)
             return resolve(data)
           } catch (e) {
+            /* istanbul ignore next */
+            console.error(e)
             /* istanbul ignore next */
             this.errorList.push(e)
             /* istanbul ignore next */

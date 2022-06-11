@@ -5,3 +5,5 @@ yarn-error.log
 package-lock.json
 temp.js
 coverage/
+test.js
+test.db

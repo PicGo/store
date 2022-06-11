@@ -23,6 +23,7 @@ export interface IObject {
 export type IInsertData = IObject[] | [string, IObject] | [IObject[]]
 
 export enum IMetaInfoMode {
+  createMany,
   create,
   update
 }
@@ -31,4 +32,16 @@ export type IResult<T> = T & {
   id: string
   createdAt: number
   updatedAt: number
+}
+
+export interface ILowData {
+  [propName: string]: IObject[] | ILowDataKeyMap
+}
+
+export interface ILowDataKeyMap {
+  [id: string]: 1
+}
+
+export interface IJSON {
+  [propsName: string]: string | number | IJSON
 }

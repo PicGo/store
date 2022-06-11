@@ -4,8 +4,18 @@ import fs from 'graceful-fs'
 // import zlib from 'zlib'
 const DBName = 'test.db'
 
+const sleep = async (timeout = 500): Promise<void> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve()
+    }, timeout)
+  })
+}
+
 afterAll(() => {
-  fs.unlinkSync(path.join(__dirname, DBName))
+  if (fs.existsSync(path.join(__dirname, DBName))) {
+    fs.unlinkSync(path.join(__dirname, DBName))
+  }
 }, 1000)
 
 describe('write group', () => {
@@ -27,6 +37,15 @@ describe('write group', () => {
     } catch (e) {
       expect(e).toEqual(Error('Please provide valid dbPath or collectionName'))
     }
+  })
+
+  it('It should read only once with multiple get', async () => {
+    const db = new DBStore(path.join(__dirname, DBName), 'uploaded')
+    await db.get()
+    await db.get()
+    await db.get()
+    const adapter = db.getAdapter()
+    expect(adapter.readCount).toBe(1)
   })
 
   it('It should add a new item in db', async () => {
@@ -171,5 +190,20 @@ describe('filter test', () => {
     })
     expect(data1.data[0]).toEqual(data2.data[0])
     expect(data2.data.length).toBe(1)
+  })
+})
+
+describe('test some db case', () => {
+  it('It should open testdb.db', async () => {
+    const db = new DBStore(path.join(__dirname, 'testdb.db'), 'gallery')
+    const data = await db.get()
+    expect(data.data.length).toBe(57)
+  })
+  it('It should not open broken.db', async () => {
+    const db = new DBStore(path.join(__dirname, 'broken.db'), 'gallery')
+    await sleep()
+    expect(db.errorList.length).toBe(1)
+    const data = await db.get()
+    expect(data.data.length).toBe(0)
   })
 })

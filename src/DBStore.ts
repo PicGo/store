@@ -7,6 +7,8 @@ class DBStore {
   private readonly collectionName: string
   private readonly collectionKey: string
   private reading: Promise<Lowdb.LowdbAsync<any>> | null = null
+  public errorList: Array<Error | string> = []
+  private readonly adapter: ZlibAdapter
   constructor (dbPath: string, collectionName: string) {
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (!dbPath || !collectionName) {
@@ -14,8 +16,12 @@ class DBStore {
     }
     this.collectionName = collectionName
     this.collectionKey = `__${collectionName}_KEY__`
-    const adapter = new ZlibAdapter(dbPath, collectionName)
-    this.db = Lowdb<any>(adapter)
+    this.adapter = new ZlibAdapter(dbPath, collectionName, this.errorList)
+    this.db = Lowdb<any>(this.adapter)
+  }
+
+  getAdapter (): ZlibAdapter {
+    return this.adapter
   }
 
   async read (flush = false): Promise<Lowdb.LowdbAsync<any>> {

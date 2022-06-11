@@ -1,46 +1,57 @@
+/* eslint-disable no-async-promise-executor */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import fs from 'graceful-fs'
 import { promisify } from 'util'
-import zlib from 'zlib'
+import { gunzip, gzip, strFromU8 } from 'fflate'
+import writeFile from 'write-file-atomic'
 
-const writeFile = promisify(fs.writeFile)
+const readFile = promisify(fs.readFile)
 
 class ZlibAdapter {
   private readonly dbPath: string
   private readonly collectionName: string
+  public errorList: Array<Error | string>
+  public readCount = -1 // init DBStore will read first time
   // @ts-ignore
-  constructor (dbPath: string, collectionName: string) {
+  constructor (dbPath: string, collectionName: string, errorList: Array<Error | string>) {
     this.dbPath = dbPath
     this.collectionName = collectionName
+    this.errorList = errorList
   }
 
   async read (): Promise<any> {
-    return new Promise((resolve, reject) => {
+    this.readCount++
+    const defaultData = {
+      [this.collectionName]: [],
+      [`__${this.collectionName}_KEY__`]: {}
+    }
+    return new Promise(async (resolve, reject) => {
       if (fs.existsSync(this.dbPath)) {
-      // const data = (await readFile(this.dbPath)) || `{"${this.collectionName}": []}`
-        const gunzip = zlib.createGunzip()
-        let buffer: string = ''
-        fs.createReadStream(this.dbPath)
-          .pipe(gunzip)
-        gunzip.on('data', (data: Buffer) => {
-          buffer += data.toString()
-        }).on('end', () => {
-          resolve(JSON.parse(buffer))
+        const buffer = (await readFile(this.dbPath))
+        gunzip(buffer, (err, data) => {
+          if (err) {
+            this.errorList.push(err)
+            return resolve(defaultData)
+          }
+          const str = strFromU8(data)
+          try {
+            const data = JSON.parse(str)
+            return resolve(data)
+          } catch (e) {
+            /* istanbul ignore next */
+            this.errorList.push(e)
+            /* istanbul ignore next */
+            return resolve(defaultData)
+          }
         })
       } else {
-        const data = JSON.stringify({
-          [this.collectionName]: [],
-          [`__${this.collectionName}_KEY__`]: {}
-        })
-        zlib.gzip(data, async (err, result): Promise<void> => {
+        const data = Buffer.from(JSON.stringify(defaultData))
+        gzip(data, async (err, result): Promise<void> => {
           /* istanbul ignore next */
           if (err) return reject(err)
-          await writeFile(this.dbPath, result)
-          resolve({
-            [this.collectionName]: [],
-            [`__${this.collectionName}_KEY__`]: {}
-          })
+          await writeFile(this.dbPath, Buffer.from(result))
+          resolve(defaultData)
         })
       }
     })
@@ -48,11 +59,11 @@ class ZlibAdapter {
 
   async write (data: any): Promise<void> {
     return new Promise((resolve, reject) => {
-      data = JSON.stringify(data)
-      zlib.gzip(data, async (err, result): Promise<void> => {
+      data = Buffer.from(JSON.stringify(data))
+      gzip(data, async (err, result): Promise<void> => {
         /* istanbul ignore next */
         if (err) return reject(err)
-        await writeFile(this.dbPath, result)
+        await writeFile(this.dbPath, Buffer.from(result))
         resolve()
       })
     })

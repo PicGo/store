@@ -1,3 +1,17 @@
+## :tada: 2.0.1 (2022-06-12)
+
+
+### :sparkles: Features
+
+* not compress json data ([ef8adb6](https://github.com/Molunerfinn/typescript-node-template/commit/ef8adb6))
+
+
+### :bug: Bug Fixes
+
+* github action build error ([b4fe0ac](https://github.com/Molunerfinn/typescript-node-template/commit/b4fe0ac))
+
+
+
 # :tada: 2.0.0 (2022-06-11)
 
 

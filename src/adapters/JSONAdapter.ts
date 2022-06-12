@@ -18,6 +18,6 @@ export class JSONAdapter {
   }
 
   write (obj: any): void {
-    this.adapter.write(json.stringify(obj))
+    this.adapter.write(json.stringify(obj, null, 2))
   }
 }

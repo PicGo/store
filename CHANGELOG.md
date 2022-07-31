@@ -1,3 +1,12 @@
+## :tada: 2.0.2 (2022-07-31)
+
+
+### :package: Chore
+
+* change JSONAdapter write file func ([145ca3b](https://github.com/Molunerfinn/typescript-node-template/commit/145ca3b))
+
+
+
 ## :tada: 2.0.1 (2022-06-12)
 
 

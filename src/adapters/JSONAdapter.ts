@@ -1,23 +1,26 @@
 import { TextFileSync } from '@commonify/lowdb'
 import json from 'comment-json'
 import { IJSON } from 'src/types'
-// import writeFile from 'write-file-atomic'
+import writeFile from 'write-file-atomic'
 export class JSONAdapter {
   private readonly adapter: TextFileSync
-  constructor (dbName: string) {
-    this.adapter = new TextFileSync(dbName)
+  private readonly dbPath: string
+  constructor (dbPath: string) {
+    this.dbPath = dbPath
+    this.adapter = new TextFileSync(dbPath)
   }
 
   read (): IJSON {
     const data = this.adapter.read()
+    /* istanbul ignore if */
     if (data === null) {
       return {}
     } else {
-      return json.parse(data)
+      return json.parse(data || '{}')
     }
   }
 
   write (obj: any): void {
-    this.adapter.write(json.stringify(obj, null, 2))
+    writeFile.sync(this.dbPath, Buffer.from(json.stringify(obj, null, 2)))
   }
 }

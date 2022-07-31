@@ -31,6 +31,11 @@ it('It should set config correctly', () => {
   expect(item.test1).toBe(true)
 })
 
+it('It should read config correctly', () => {
+  const db = new JSONStore(path.join(__dirname, 'broken.json'))
+  expect(db.read(true)).toEqual({})
+})
+
 it('It should has correct key & value', () => {
   const db = new JSONStore(path.join(__dirname, DBName))
   const result = db.has('test1.test3')

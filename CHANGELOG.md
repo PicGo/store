@@ -1,3 +1,12 @@
+## :tada: 2.0.3 (2022-08-20)
+
+
+### :bug: Bug Fixes
+
+* comment-json broken case ([477aaec](https://github.com/Molunerfinn/typescript-node-template/commit/477aaec))
+
+
+
 ## :tada: 2.0.2 (2022-07-31)
 
 

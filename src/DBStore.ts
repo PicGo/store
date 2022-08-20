@@ -1,3 +1,4 @@
+/* eslint-disable no-return-await */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
@@ -106,7 +107,7 @@ class DBStore {
     const collection = await this.getCollection()
     const result = await this.getCollectionKey(id)
     if (result) {
-      const item = collection.find(item => item.id === id)
+      const item = collection.find(item => item.id === id) || {}
       Object.assign(item, value)
       await this.db.write()
       return true

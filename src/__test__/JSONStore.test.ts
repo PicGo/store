@@ -62,3 +62,8 @@ it('It should flush correctly', () => {
   db.read(true)
   expect(db.get('test')).toBe(1)
 })
+
+it('It should return {} if the db is broken', () => {
+  const db = new JSONStore(path.join(__dirname, 'broken.json'))
+  expect(db.read(true)).toEqual({})
+})

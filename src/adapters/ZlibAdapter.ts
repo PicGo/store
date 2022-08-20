@@ -39,7 +39,7 @@ class ZlibAdapter {
           try {
             const data = JSON.parse(str)
             return resolve(data)
-          } catch (e) {
+          } catch (e: any) {
             /* istanbul ignore next */
             console.error(e)
             /* istanbul ignore next */

@@ -16,11 +16,20 @@ export class JSONAdapter {
     if (data === null) {
       return {}
     } else {
-      return json.parse(data || '{}')
+      try {
+        // comment-json will break in some cases
+        return json.parse(data || '{}')
+      } catch (e) {
+        try {
+          return JSON.parse(data || '{}')
+        } catch (e) {
+          return {}
+        }
+      }
     }
   }
 
   write (obj: any): void {
-    writeFile.sync(this.dbPath, Buffer.from(json.stringify(obj, null, 2)))
+    writeFile.sync(this.dbPath, json.stringify(obj, null, 2))
   }
 }

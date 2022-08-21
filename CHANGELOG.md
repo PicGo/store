@@ -1,3 +1,17 @@
+## :tada: 2.0.4 (2022-08-21)
+
+
+### :bug: Bug Fixes
+
+* build error ([e18c9a5](https://github.com/Molunerfinn/typescript-node-template/commit/e18c9a5))
+
+
+### :package: Chore
+
+* upgrade rollup build options ([b92a3e8](https://github.com/Molunerfinn/typescript-node-template/commit/b92a3e8))
+
+
+
 ## :tada: 2.0.3 (2022-08-20)
 
 

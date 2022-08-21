@@ -1,5 +1,6 @@
 import { terser } from 'rollup-plugin-terser'
 import typescript from 'rollup-plugin-typescript2'
+import commonjs from '@rollup/plugin-commonjs'
 // import resolve from 'rollup-plugin-node-resolve'
 export default {
   input: './src/index.ts',
@@ -7,7 +8,8 @@ export default {
     typescript({
       tsconfigOverride: {
         compilerOptions: {
-          module: 'ESNext'
+          target: 'ES2017',
+          module: 'ES2020'
         },
         exclude: [
           'node_modules',
@@ -16,12 +18,13 @@ export default {
         ]
       }
     }),
+    commonjs(),
     terser()
   ],
   output: [{
     format: 'cjs',
     file: 'dist/index.js',
-    sourcemap: true
+    sourcemap: 'inline'
   }],
   external: [
     'write-file-atomic',
@@ -29,6 +32,8 @@ export default {
     '@commonify/lowdb',
     'fflate',
     'util',
-    'fs'
+    'fs',
+    'lodash',
+    'comment-json'
   ]
 }

@@ -18,11 +18,16 @@ export class JSONAdapter {
     } else {
       try {
         // comment-json will break in some cases
-        return json.parse(data || '{}')
+        const res = json.parse(data || '{}')
+        if (res === null || typeof res !== 'object') {
+          return {}
+        }
+        return res as IJSON
       } catch (e) {
         try {
           return JSON.parse(data || '{}')
         } catch (e) {
+          console.error('[PicGo store] JSON parse error', e)
           return {}
         }
       }

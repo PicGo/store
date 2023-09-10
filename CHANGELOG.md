@@ -1,3 +1,12 @@
+# :tada: 2.1.0 (2023-09-10)
+
+
+### :sparkles: Features
+
+* add updateMany api for DBStore ([0775f19](https://github.com/Molunerfinn/typescript-node-template/commit/0775f19))
+
+
+
 ## :tada: 2.0.4 (2022-08-21)
 
 

@@ -25,7 +25,8 @@ export type IInsertData = IObject[] | [string, IObject] | [IObject[]]
 export enum IMetaInfoMode {
   createMany,
   create,
-  update
+  update,
+  updateMany
 }
 
 export type IResult<T> = T & {

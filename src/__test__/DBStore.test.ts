@@ -68,6 +68,7 @@ describe('write group', () => {
     await db.removeById('test-id')
     const resultValue = await db.getById('test-id')
     expect(resultValue).toBeUndefined()
+    await db.removeById('test-id')
     // @ts-ignore
     res = reading.__uploaded_KEY__['test-id']
     expect(res).toBe(undefined)
@@ -229,5 +230,41 @@ describe('test some db case', () => {
     await sleep()
     expect(db.errorList.length).toBe(1)
     expect(data.data.length).toBe(0)
+  })
+})
+
+describe('test update many', () => {
+  it('It should update many', async () => {
+    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    await db.overwrite([
+      {
+        id: 'test1',
+        a: 'test1'
+      },
+      {
+        id: 'test2',
+        a: 'test2'
+      },
+      {
+        id: 'test3',
+        a: 'test3'
+      }
+    ])
+    const updateRes = await db.updateMany([{
+      id: 'test1',
+      a: 'test1-1'
+    }, {
+      id: 'test2',
+      a: 'test2-1'
+    }, {
+      a: 'test4-1'
+    }, {
+      id: 'test4'
+    }])
+    const data = await db.get()
+    expect(data.data[0].a).toBe('test1-1')
+    expect(data.data[1].a).toBe('test2-1')
+    expect(updateRes.success).toBe(2)
+    expect(updateRes.total).toBe(4)
   })
 })

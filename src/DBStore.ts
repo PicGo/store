@@ -58,6 +58,7 @@ class DBStore {
   }
 
   private async getCollection (): Promise<Array<IResult<IObject>>> {
+    /* istanbul ignore next */
     return ((await this.read())?.[this.collectionName]) as Array<IResult<IObject>>
   }
 
@@ -66,6 +67,7 @@ class DBStore {
   }
 
   private async getCollectionKeyMap (): Promise<ILowDataKeyMap> {
+    /* istanbul ignore next */
     return (((await this.read())?.[this.collectionKey]) as ILowDataKeyMap)
   }
 
@@ -107,12 +109,35 @@ class DBStore {
     const collection = await this.getCollection()
     const result = await this.getCollectionKey(id)
     if (result) {
+      /* istanbul ignore next */
       const item = collection.find(item => item.id === id) || {}
       Object.assign(item, value)
       await this.db.write()
       return true
     } else {
       return false
+    }
+  }
+
+  @metaInfoHelper(IMetaInfoMode.updateMany)
+  async updateMany (list: IObject[]): Promise<{ total: number, success: number }> {
+    const collection = await this.getCollection()
+    let successCount = 0
+    for (const item of list) {
+      if (item.id) {
+        const result = await this.getCollectionKey(item.id)
+        if (result) {
+          successCount++
+          /* istanbul ignore next */
+          const target = collection.find(t => t.id === item.id) || {}
+          Object.assign(target, item)
+        }
+      }
+    }
+    await this.db.write()
+    return {
+      success: successCount,
+      total: list.length
     }
   }
 

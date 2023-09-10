@@ -67,3 +67,13 @@ it('It should return {} if the db is broken', () => {
   const db = new JSONStore(path.join(__dirname, 'broken.json'))
   expect(db.read(true)).toEqual({})
 })
+
+it('It should return {} if the db is broken with null', () => {
+  const db = new JSONStore(path.join(__dirname, 'broken-null.json'))
+  expect(db.read(true)).toEqual({})
+})
+
+it('It should return {} if the db is empty', () => {
+  const db = new JSONStore(path.join(__dirname, 'broken-empty.json'))
+  expect(db.read(true)).toEqual({})
+})

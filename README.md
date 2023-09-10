@@ -162,7 +162,7 @@ async () => {
 }
 ```
 
-#### Overwrite `.overwrite()<T>(value: T[])` (v2.0.0)
+#### Overwrite `.overwrite<T>(value: T[])` (v2.0.0)
 
 - return: `Promise<IResult<T>[]>`
 - interface: [IResult](/src/types/index.ts)
@@ -191,6 +191,33 @@ async () => {
   //   createdAt: number,
   //   updatedAt: number 
   // }]
+}
+```
+
+#### UpdateMany `.updateMany(list: IObject[])` (v2.1.0)
+
+- return: `Promise<{ total: number, success: number }>`
+- interface: [IObject](/src/types/index.ts)
+
+To update many items by id:
+
+```js
+async () => {
+  const result = await db.updateMany([
+    {
+      id: 'xxx', // need to have id
+      imgUrl: 'https://xxxx.jpg'
+    },
+    {
+      id: 'yyy',
+      imgUrl: 'https://yyyy.jpg'
+    },
+    {
+      imgUrl: 'https://zzzz.jpg'
+    }
+  ])
+  console.log(result)
+  // { total: 3, success: 2 }
 }
 ```
 

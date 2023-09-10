@@ -10,6 +10,10 @@ function metaInfoHelper (mode: IMetaInfoMode) {
         args = [args]
       } else if (mode === IMetaInfoMode.create) {
         args[0] = metaInfoGenerator(args[0] as IObject)
+      } else if (mode === IMetaInfoMode.updateMany) {
+        args = args[0] as IObject[]
+        args = (args as IObject[]).map(item => metaInfoUpdater(item))
+        args = [args]
       } else {
         metaInfoUpdater((args as [string, IObject])[1])
       }

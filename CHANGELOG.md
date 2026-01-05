@@ -1,3 +1,12 @@
+## :tada: 2.2.1 (2026-01-05)
+
+
+### :bug: Bug Fixes
+
+* husky bug ([217500d](https://github.com/Molunerfinn/typescript-node-template/commit/217500d))
+
+
+
 # :tada: 2.2.0 (2026-01-05)
 
 

@@ -1,3 +1,13 @@
+# :tada: 2.2.0 (2026-01-05)
+
+
+### :package: Chore
+
+* **actions:** update actions ([41faaff](https://github.com/Molunerfinn/typescript-node-template/commit/41faaff))
+* **deps:** update deps ([3d9ed2d](https://github.com/Molunerfinn/typescript-node-template/commit/3d9ed2d))
+
+
+
 # :tada: 2.1.0 (2023-09-10)
 
 

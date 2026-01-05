@@ -67,7 +67,7 @@
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-promise": "6.0.0",
     "eslint-plugin-standard": "5.0.0",
-    "husky": "^4.0.10",
+    "husky": "^9.1.7",
     "rimraf": "^3.0.2",
     "rollup": "^2.78.1",
     "rollup-plugin-node-resolve": "^5.2.0",

@@ -1,7 +1,9 @@
 import { DBStore } from '../DBStore'
 import path from 'path'
-import fs from 'graceful-fs'
+import fs from 'fs'
 const DBName = 'test.db'
+
+const testDir = path.resolve(process.cwd(), 'src/__test__')
 
 const sleep = async (timeout = 500): Promise<void> => {
   return new Promise((resolve) => {
@@ -12,8 +14,8 @@ const sleep = async (timeout = 500): Promise<void> => {
 }
 
 afterAll(() => {
-  if (fs.existsSync(path.join(__dirname, DBName))) {
-    fs.unlinkSync(path.join(__dirname, DBName))
+  if (fs.existsSync(path.join(testDir, DBName))) {
+    fs.unlinkSync(path.join(testDir, DBName))
   }
 }, 1000)
 
@@ -39,7 +41,7 @@ describe('write group', () => {
   })
 
   it('It should read only once with multiple get', async () => {
-    const db = new DBStore(path.join(__dirname, DBName), 'uploaded')
+    const db = new DBStore(path.join(testDir, DBName), 'uploaded')
     await db.get()
     await db.get()
     await db.get()
@@ -48,7 +50,7 @@ describe('write group', () => {
   })
 
   it('It should add a new item in db', async () => {
-    const db = new DBStore(path.join(__dirname, DBName), 'uploaded')
+    const db = new DBStore(path.join(testDir, DBName), 'uploaded')
     const resultValue = await db.insert({
       id: 'test-id',
       test: 1
@@ -60,22 +62,22 @@ describe('write group', () => {
 
   it('It should remove a item in db', async () => {
     await sleep(1000)
-    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
-    const reading = await db.read() || {}
-    // @ts-ignore
+    const db = new DBStore(path.join(testDir, 'test.db'), 'uploaded')
+    const reading = await db.read() ?? {}
+    // @ts-expect-error
     let res = reading.__uploaded_KEY__['test-id']
     expect(res).toBe(1)
     await db.removeById('test-id')
     const resultValue = await db.getById('test-id')
     expect(resultValue).toBeUndefined()
     await db.removeById('test-id')
-    // @ts-ignore
+    // @ts-expect-error
     res = reading.__uploaded_KEY__['test-id']
     expect(res).toBe(undefined)
   })
 
   it('It should insertMany item in db', async () => {
-    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    const db = new DBStore(path.join(testDir, 'test.db'), 'uploaded')
     const resultValue = await db.insertMany([{
       id: 'test-id-1',
       test: 1
@@ -92,7 +94,7 @@ describe('write group', () => {
   })
 
   it('It should add a item with id', async () => {
-    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    const db = new DBStore(path.join(testDir, 'test.db'), 'uploaded')
     await db.insert({
       test: 123,
       createdAt: Date.now()
@@ -106,7 +108,7 @@ describe('write group', () => {
 
 describe('update group', () => {
   it('It should update a item by id', async () => {
-    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    const db = new DBStore(path.join(testDir, 'test.db'), 'uploaded')
     await db.updateById('test-id-1', {
       test: 2
     })
@@ -115,7 +117,7 @@ describe('update group', () => {
   })
 
   it('It should return false when update a non-exists item', async () => {
-    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    const db = new DBStore(path.join(testDir, 'test.db'), 'uploaded')
     const result = await db.updateById('test-id-4', {
       test: 3
     })
@@ -123,13 +125,13 @@ describe('update group', () => {
   })
 
   it('It should return undefined when get a non-exists item', async () => {
-    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    const db = new DBStore(path.join(testDir, 'test.db'), 'uploaded')
     const result = await db.getById('xxx')
     expect(result).toBeUndefined()
   })
 
   it('It should update when insert same the same id', async () => {
-    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    const db = new DBStore(path.join(testDir, 'test.db'), 'uploaded')
     await db.insert<{
       id?: string
       a: number
@@ -152,7 +154,7 @@ describe('update group', () => {
   })
 
   it('It should overwrite all data', async () => {
-    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    const db = new DBStore(path.join(testDir, 'test.db'), 'uploaded')
     await db.overwrite([
       {
         id: 'test1',
@@ -176,7 +178,7 @@ describe('update group', () => {
 
 describe('filter test', () => {
   it('It should reverse when orderBy desc', async () => {
-    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    const db = new DBStore(path.join(testDir, 'test.db'), 'uploaded')
     const data1 = await db.get({
       orderBy: 'asc'
     })
@@ -186,7 +188,7 @@ describe('filter test', () => {
     expect(data1.data.reverse()).toEqual(data2.data)
   })
   it('It should filter failed when the offset < 0 or limit < 0', async () => {
-    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    const db = new DBStore(path.join(testDir, 'test.db'), 'uploaded')
     const data1 = await db.get({
       offset: -1
     })
@@ -199,7 +201,7 @@ describe('filter test', () => {
   })
 
   it('It should filter success when offset >= 0', async () => {
-    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    const db = new DBStore(path.join(testDir, 'test.db'), 'uploaded')
     const data1 = await db.get()
     const data2 = await db.get({
       offset: 1
@@ -208,7 +210,7 @@ describe('filter test', () => {
   })
 
   it('It should filter success when limit > 0', async () => {
-    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    const db = new DBStore(path.join(testDir, 'test.db'), 'uploaded')
     const data1 = await db.get()
     const data2 = await db.get({
       limit: 1
@@ -220,12 +222,12 @@ describe('filter test', () => {
 
 describe('test some db case', () => {
   it('It should open testdb.db', async () => {
-    const db = new DBStore(path.join(__dirname, 'testdb.db'), 'gallery')
+    const db = new DBStore(path.join(testDir, 'testdb.db'), 'gallery')
     const data = await db.get()
     expect(data.data.length).toBe(57)
   })
   it('It should not open broken.db', async () => {
-    const db = new DBStore(path.join(__dirname, 'broken.db'), 'gallery')
+    const db = new DBStore(path.join(testDir, 'broken.db'), 'gallery')
     const data = await db.get()
     await sleep()
     expect(db.errorList.length).toBe(1)
@@ -235,7 +237,7 @@ describe('test some db case', () => {
 
 describe('test update many', () => {
   it('It should update many', async () => {
-    const db = new DBStore(path.join(__dirname, 'test.db'), 'uploaded')
+    const db = new DBStore(path.join(testDir, 'test.db'), 'uploaded')
     await db.overwrite([
       {
         id: 'test1',

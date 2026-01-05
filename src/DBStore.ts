@@ -82,9 +82,8 @@ class DBStore {
   async insert<T> (value: T, writable = true): Promise<IResult<T>> {
     const id = (value as IResult<T>).id
     const result = await this.getCollectionKey(id)
-    // @ts-ignore
     if (result) {
-      await this.updateById(id, value)
+      await this.updateById(id, value as IResult<T>)
       return (value as IResult<T>)
     }
     (await this.getCollection()).push(value as IResult<T>)
@@ -110,7 +109,7 @@ class DBStore {
     const result = await this.getCollectionKey(id)
     if (result) {
       /* istanbul ignore next */
-      const item = collection.find(item => item.id === id) || {}
+      const item = collection.find(item => item.id === id) ?? {}
       Object.assign(item, value)
       await this.db.write()
       return true
@@ -129,7 +128,7 @@ class DBStore {
         if (result) {
           successCount++
           /* istanbul ignore next */
-          const target = collection.find(t => t.id === item.id) || {}
+          const target = collection.find(t => t.id === item.id) ?? {}
           Object.assign(target, item)
         }
       }
@@ -151,6 +150,7 @@ class DBStore {
     const index = collection.findIndex(item => item.id === id)
     if (index !== -1) {
       collection.splice(index, 1)
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete collectionKeyMap[id]
       await this.db.write()
     }

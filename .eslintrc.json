@@ -5,9 +5,13 @@
   },
   "overrides": [
     {
-      "files": ["*.ts","*.js"],
+      "files": [
+        "*.ts",
+        "*.js"
+      ],
       "rules": {
-        "@typescript-eslint/strict-boolean-expressions": "off"
+        "@typescript-eslint/strict-boolean-expressions": "off",
+        "@typescript-eslint/return-await": "off"
       }
     }
   ]

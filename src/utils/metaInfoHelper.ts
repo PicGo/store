@@ -6,13 +6,13 @@ function metaInfoHelper (mode: IMetaInfoMode) {
     descriptor.value = async function (...args: IInsertData) {
       if (mode === IMetaInfoMode.createMany) {
         args = args[0] as IObject[]
-        args = (args as IObject[]).map(item => metaInfoGenerator(item))
+        args = args.map(item => metaInfoGenerator(item))
         args = [args]
       } else if (mode === IMetaInfoMode.create) {
         args[0] = metaInfoGenerator(args[0] as IObject)
       } else if (mode === IMetaInfoMode.updateMany) {
         args = args[0] as IObject[]
-        args = (args as IObject[]).map(item => metaInfoUpdater(item))
+        args = args.map(item => metaInfoUpdater(item))
         args = [args]
       } else {
         metaInfoUpdater((args as [string, IObject])[1])
@@ -24,6 +24,7 @@ function metaInfoHelper (mode: IMetaInfoMode) {
 }
 
 // https://gist.github.com/LeverOne/1308368
+// eslint-disable-next-line @typescript-eslint/restrict-plus-operands
 function uuid (a: any = '', b: any = ''): string { for (b = a = ''; a++ < 36; b += a * 51 & 52 ? (a ^ 15 ? 8 ^ Math.random() * (a ^ 20 ? 16 : 4) : 4).toString(16) : '-');return b }
 
 function metaInfoGenerator (value: IObject): IObject {

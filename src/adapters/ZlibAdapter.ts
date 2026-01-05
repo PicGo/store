@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import fs from 'fs'
-import { promisify } from 'util'
+import { promisify } from 'node:util'
 import { gunzip, gzip, strFromU8 } from 'fflate'
 import writeFile from 'write-file-atomic'
 
@@ -13,7 +13,6 @@ class ZlibAdapter {
   private readonly collectionName: string
   public errorList: Array<Error | string>
   public readCount = 0
-  // @ts-ignore
   constructor (dbPath: string, collectionName: string, errorList: Array<Error | string>) {
     this.dbPath = dbPath
     this.collectionName = collectionName
@@ -29,7 +28,7 @@ class ZlibAdapter {
     return new Promise(async (resolve, reject) => {
       if (fs.existsSync(this.dbPath)) {
         const buffer = (await readFile(this.dbPath))
-        gunzip(buffer, (err, data) => {
+        gunzip(buffer as unknown as Uint8Array, (err, data) => {
           if (err) {
             console.error(err)
             this.errorList.push(err)
@@ -50,7 +49,7 @@ class ZlibAdapter {
         })
       } else {
         const data = Buffer.from(JSON.stringify(defaultData))
-        gzip(data, async (err, result): Promise<void> => {
+        gzip(data as unknown as Uint8Array, async (err, result): Promise<void> => {
           /* istanbul ignore next */
           if (err) return reject(err)
           await writeFile(this.dbPath, Buffer.from(result))

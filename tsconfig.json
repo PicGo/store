@@ -14,11 +14,15 @@
     "declaration": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
-    "types": ["node", "jest"],
+    "types": [
+      "node",
+      "vitest/globals"
+    ],
     "outDir": "dist",
     "typeRoots": [
       "./node_modules/@types",
-      "./src/types/*",
+      "./node_modules",
+      "./src/types"
     ],
     "lib": [
       "ScriptHost",

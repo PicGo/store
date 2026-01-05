@@ -3,27 +3,45 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
+    inputs:
+      publish_tag:
+        description: "npm tag to publish with (default: latest)"
+        required: false
+        default: "latest"
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
-      - name: Clone repo
-        uses: actions/checkout@v1
-      - name: Setup node
-        uses: actions/setup-node@v1
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: '16.x'
-          registry-url: 'https://registry.npmjs.org'
-      - name: Install modules
-        run: yarn
+          run_install: false
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Run tests
-        run: npm run test
+        run: pnpm run test
       - name: Coveralls
-        run: npm run cover
+        run: pnpm run cover
         env:
           COVERALLS_REPO_TOKEN: "${{ secrets.COVERALLS_REPO_TOKEN }}"
           COVERALLS_GIT_BRANCH: "${{ github.ref }}"
-      - run: npm run build
-      - run: npm publish --access public
+      - run: pnpm run build
+      - run: pnpm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

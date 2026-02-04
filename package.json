@@ -17,12 +17,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Molunerfinn/typescript-node-template.git"
+    "url": "https://github.com/PicGo/store"
   },
   "author": "Molunerfinn",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Molunerfinn/typescript-node-template/issues"
+    "url": "https://github.com/PicGo/store/issues"
   },
   "husky": {
     "hooks": {

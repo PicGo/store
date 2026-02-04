@@ -1,4 +1,7 @@
 name: publish
+permissions:
+  contents: read
+  id-token: write
 on:
   push:
     branches:
@@ -12,9 +15,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,7 +28,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 25
           registry-url: https://registry.npmjs.org
           cache: pnpm
 
@@ -42,6 +42,6 @@ jobs:
           COVERALLS_REPO_TOKEN: "${{ secrets.COVERALLS_REPO_TOKEN }}"
           COVERALLS_GIT_BRANCH: "${{ github.ref }}"
       - run: pnpm run build
-      - run: pnpm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Unset NODE_AUTH_TOKEN
+        run: unset NODE_AUTH_TOKEN
+      - run: npm publish --access public --provenance

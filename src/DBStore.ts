@@ -59,7 +59,7 @@ class DBStore {
 
   private async getCollection (): Promise<Array<IResult<IObject>>> {
     /* istanbul ignore next */
-    return ((await this.read())?.[this.collectionName]) as Array<IResult<IObject>>
+    return ((await this.read())?.[this.collectionName] ?? []) as Array<IResult<IObject>>
   }
 
   private async getCollectionKey (id: string): Promise<1 | null> {
@@ -68,7 +68,7 @@ class DBStore {
 
   private async getCollectionKeyMap (): Promise<ILowDataKeyMap> {
     /* istanbul ignore next */
-    return (((await this.read())?.[this.collectionKey]) as ILowDataKeyMap)
+    return (((await this.read())?.[this.collectionKey]) ?? {}) as ILowDataKeyMap
   }
 
   private async setCollectionKey (id: string): Promise<void> {
@@ -79,7 +79,7 @@ class DBStore {
   }
 
   @metaInfoHelper(IMetaInfoMode.create)
-  async insert<T> (value: T, writable = true): Promise<IResult<T>> {
+  async insert<T>(value: T, writable = true): Promise<IResult<T>> {
     const id = (value as IResult<T>).id
     const result = await this.getCollectionKey(id)
     if (result) {
@@ -95,7 +95,7 @@ class DBStore {
   }
 
   @metaInfoHelper(IMetaInfoMode.createMany)
-  async insertMany<T> (value: T[]): Promise<Array<IResult<T>>> {
+  async insertMany<T>(value: T[]): Promise<Array<IResult<T>>> {
     for (const item of value) {
       await this.insert(item, false)
     }
@@ -140,7 +140,7 @@ class DBStore {
     }
   }
 
-  async getById<T> (id: string): Promise<IResult<T> | undefined> {
+  async getById<T>(id: string): Promise<IResult<T> | undefined> {
     return (await this.getCollection()).find(item => item.id === id) as IResult<T>
   }
 
@@ -156,7 +156,7 @@ class DBStore {
     }
   }
 
-  async overwrite<T> (value: T[]): Promise<Array<IResult<T>>> {
+  async overwrite<T>(value: T[]): Promise<Array<IResult<T>>> {
     await this.read();
     (this.db.data as ILowData)[this.collectionName] = [];
     (this.db.data as ILowData)[this.collectionKey] = {}

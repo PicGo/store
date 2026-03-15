@@ -1,3 +1,17 @@
+## :tada: 2.2.2 (2026-03-15)
+
+
+### :bug: Bug Fixes
+
+* slice bug ([5564ed3](https://github.com/PicGo/store/commit/5564ed3))
+
+
+### :package: Chore
+
+* update actions ([c14c92c](https://github.com/PicGo/store/commit/c14c92c))
+
+
+
 ## :tada: 2.2.1 (2026-01-05)
 
 
